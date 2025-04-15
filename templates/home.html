@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyaMitra</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- AOS (Animate on Scroll) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4f46e5, #6d28d9);
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #4f46e5, #6d28d9, #d6395b);
+            /* Blue → Purple → Red */
+            box-shadow: 10px 15px 150px rgba(108, 40, 217, 0.993);
+            transition: 0.5s ease-in-out;
+        }
+
+
+        /* Fullscreen Canvas for Neural Animation */
+        /* @keyframes bgColorShift {
+    0%   { background: #0f172a; } 
+    25%  { background: #1e293b; } 
+    50%  { background: #334155; } 
+    75%  { background: #475569; } 
+    100% { background: #0f172a; } 
+} */
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            z-index: -1;
+            /* animation: bgColorShift 8s infinite alternate ease-in-out; */
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradientShift 3s infinite linear;
+        }
+
+        .card {
+            background: #1f2937;
+            /* Dark Gray Background */
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            /* Very slight scaling */
+            box-shadow:
+                -4px 4px 12px rgba(79, 70, 229, 0.6),
+                /* Blue (Top Left) */
+                4px -4px 15px rgba(108, 40, 217, 0.5),
+                /* Purple (Bottom Right) */
+                -8px -8px 20px rgba(225, 29, 72, 0.4),
+                /* Red (Top Right) */
+                8px 8px 25px rgba(79, 70, 229, 0.4),
+                /* Blue (Bottom Left) */
+                -10px 10px 28px rgba(108, 40, 217, 0.3),
+                /* Purple (Random Spot) */
+                10px -10px 30px rgba(225, 29, 72, 0.3);
+            /* Red (Random Spot) */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white">
+
+    <!-- AI Neural Network Animation -->
+    <div id="particles-js"></div>
+
+    <!-- Hero Section -->
+    <div class="relative h-screen flex items-center justify-center text-center p-6">
+        <div class="relative" data-aos="fade-down">
+            <h1 class="text-5xl font-bold mb-4">Welcome to <span
+                    class="headerName bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 bg-clip-text text-transparent animate-gradient">VidyaMitra.</span>
+            </h1>
+            <p class="text-lg mb-6" data-aos="fade-up" data-aos-delay="200">
+                An <strong>AI based</strong> Exam Preparation Platform, "Transforming Education Through Innovation"
+            </p>
+            <a href="/login" class="btn animate-bounce" data-aos="zoom-in" data-aos-delay="400">Login with PRN</a>
+            <a href="/admin_login" class="btn animate-bounce" data-aos="zoom-in" data-aos-delay="400">Admin Log-in</a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="py-16 px-6 text-center">
+        <h2 class="text-3xl font-semibold mb-8" data-aos="fade-right">Why Choose Us?</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="card shadow-lg transform transition duration-300" data-aos="flip-left">
+                <img src="{{ url_for('static', filename='images/exam.png') }}" class="w-24 mx-auto mb-4"
+                    alt="Secure Access">
+                <h3 class="text-xl font-semibold">Consistent Grading System</h3>
+                <p>Semantic based grading is implemented.</p>
+            </div>
+            <div class="card shadow-lg transform transition duration-300" data-aos="flip-left" data-aos-delay="200">
+                <img src="{{ url_for('static', filename='images/ai.png') }}" class="w-24 mx-auto mb-4"
+                    alt="Automated Password">
+                <h3 class="text-xl font-semibold">AI Enabled System</h3>
+                <p>Transformer based models are used for better better understanding.</p>
+            </div>
+            <div class="card shadow-lg transform transition duration-300" data-aos="flip-left" data-aos-delay="400">
+                <img src="{{ url_for('static', filename='images/authorization.png') }}" class="w-24 mx-auto mb-4"
+                    alt="User-Friendly">
+                <h3 class="text-xl font-semibold">PRN-Based Authentication</h3>
+                <p>Only authorized users with PRN can log in, ensuring <strong>data security</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Testimonials Section -->
+    <section class="py-16 px-6 text-center bg-gray-800">
+        <h2 class="text-3xl font-semibold mb-8" data-aos="fade-up">What Our Users Say</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="p-6 bg-gray-700 rounded-lg" data-aos="fade-right">
+                <p class="italic">"This system made student authentication seamless and hassle-free! Highly
+                    recommended."</p>
+                <h4 class="mt-4 font-bold">- Alex Johnson</h4>
+            </div>
+            <div class="p-6 bg-gray-700 rounded-lg" data-aos="fade-left">
+                <p class="italic">"Secure, fast, and efficient! PRN login system is a game-changer for universities."
+                </p>
+                <h4 class="mt-4 font-bold">- Sarah Patel</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 px-6 text-center">
+        <h2 class="text-3xl font-semibold mb-6" data-aos="fade-up">Get Started Now</h2>
+        <p class="mb-6" data-aos="fade-up" data-aos-delay="200">Register with your PRN & username and get verified by
+            the admin.</p>
+        <a href="/register" class="btn animate-wiggle" data-aos="zoom-in">Register Now</a>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 px-6 text-center bg-gray-800">
+        <h2 class="text-3xl font-semibold mb-8" data-aos="fade-up">Frequently Asked Questions</h2>
+        <div class="max-w-3xl mx-auto">
+            <details class="mb-4" data-aos="fade-right">
+                <summary class="cursor-pointer font-semibold">How does PRN authentication work?</summary>
+                <p class="mt-2 text-gray-300">PRN authentication ensures that only verified users with a unique PRN can
+                    log in securely.</p>
+            </details>
+            <details class="mb-4" data-aos="fade-left">
+                <summary class="cursor-pointer font-semibold">What if I forget my PRN?</summary>
+                <p class="mt-2 text-gray-300">You can contact your university administrator to retrieve or reset your
+                    PRN details.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 py-4 text-center">
+        <p>&copy; 2025 VidyaMitra. All rights reserved.</p>
+    </footer>
+
+    <!-- Particles.js Library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 100,
+                    "density": { "enable": true, "value_area": 1000 }
+                },
+                "color": { "value": "#ffffff" },
+                "shape": {
+                    "type": "circle",
+                    "stroke": { "width": 0, "color": "#000000" }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 3,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" }
+                },
+                "modes": {
+                    "grab": { "distance": 140, "line_linked": { "opacity": 1 } },
+                    "push": { "particles_nb": 4 }
+                }
+            },
+            "retina_detect": true
+        });
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Smooth Scrolling Effect
+        gsap.to("body", {
+            opacity: 1,
+            duration: 1,
+            ease: "power2.out"
+        });
+
+        // Scroll-Triggered Animations
+        gsap.utils.toArray("section").forEach((section, index) => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 100,
+                duration: 1,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
+
+        // Parallax Effect on Scroll
+        gsap.to("#particles-js", {
+            y: -100,
+            scrollTrigger: {
+                scrub: true
+            }
+        });
+
+    </script>
+
+    <!-- AOS Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+    </script>
+
+</body>
+
+</html>

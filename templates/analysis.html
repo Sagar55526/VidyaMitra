@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyaMitra - Performance Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-dark: #121212;
+            --secondary-dark: #1e1e1e;
+            --accent-color: #4facfe;
+            --accent-hover: #3388cc;
+            --text-color: #e0e0e0;
+            --border-color: #333;
+            --card-bg: #252525;
+            --highlight: #7d2ae8;
+            --success: #4CAF50;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: rgba(54, 162, 235, 0.6);
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .app-subtitle {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, var(--secondary-dark), #292929);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+            border-color: rgba(79, 172, 254, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--highlight));
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+            opacity: 0.8;
+        }
+
+        .stat-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--success);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-container {
+            margin-bottom: 2rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.2rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-color), var(--highlight));
+            color: white;
+            box-shadow: 0 6px 12px rgba(125, 42, 232, 0.3);
+        }
+
+        .chart-panel {
+            background-color: var(--secondary-dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .chart-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .chart-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .leaderboard-table th {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: var(--accent-color);
+            font-weight: 600;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1rem;
+            position: relative;
+        }
+
+        .leaderboard-table td {
+            padding: 0.8rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .leaderboard-table tr {
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-table tr:hover:not(.gold):not(.silver):not(.bronze) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .gold {
+            background: linear-gradient(145deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            position: relative;
+        }
+
+        .gold td:first-child {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .silver {
+            background: linear-gradient(145deg, rgba(192, 192, 192, 0.15), rgba(192, 192, 192, 0.05));
+        }
+
+        .silver td:first-child {
+            color: var(--silver);
+            font-weight: 700;
+        }
+
+        .bronze {
+            background: linear-gradient(145deg, rgba(205, 127, 50, 0.15), rgba(205, 127, 50, 0.05));
+        }
+
+        .bronze td:first-child {
+            color: var(--bronze);
+            font-weight: 700;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            width: fit-content;
+            margin: 2rem auto;
+            box-shadow: 0 4px 8px rgba(79, 172, 254, 0.3);
+        }
+
+        .back-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(79, 172, 254, 0.4);
+        }
+
+        .tab-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        .no-data-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-color);
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        .pie-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tab-buttons {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .leaderboard-table th, 
+            .leaderboard-table td {
+                padding: 0.6rem 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <h1 class="app-title"><i class="fas fa-chart-line"></i> VidyaMitra Analytics</h1>
+            <p class="app-subtitle">Track your learning progress and performance</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" style="animation-delay: 0.1s;">
+                <div class="stat-icon"><i class="fas fa-question-circle"></i></div>
+                <div class="stat-title">Questions Attempted</div>
+                <div class="stat-value" id="totalAttempted">0</div>
+            </div>
+            
+            <div class="stat-card" style="animation-delay: 0.2s;">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-title">Correct Answers</div>
+                <div class="stat-value" id="totalCorrect">0</div>
+            </div>
+            
+            <div class="stat-card" style="animation-delay: 0.3s;">
+                <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                <div class="stat-title">Incorrect Answers</div>
+                <div class="stat-value" id="totalIncorrect" style="color: var(--danger);">0</div>
+            </div>
+            
+            <div class="stat-card" style="animation-delay: 0.4s;">
+                <div class="stat-icon"><i class="fas fa-adjust"></i></div>
+                <div class="stat-title">Partial Answers</div>
+                <div class="stat-value" id="totalPartial" style="color: var(--warning);">0</div>
+            </div>
+        </div>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('accuracy-trend')">
+                    <i class="fas fa-chart-line"></i> Accuracy Trend
+                </button>
+                <button class="tab-btn" onclick="switchTab('answer-distribution')">
+                    <i class="fas fa-chart-pie"></i> Answer Distribution
+                </button>
+                <button class="tab-btn" onclick="switchTab('leaderboard')">
+                    <i class="fas fa-trophy"></i> Leaderboard
+                </button>
+                <button class="tab-btn" onclick="switchTab('difficulty-breakdown')">
+                    <i class="fas fa-chart-bar"></i> Difficulty Breakdown
+                </button>
+            </div>
+
+            <div id="accuracy-trend" class="tab-section active">
+                <div class="chart-panel">
+                    <h3 class="chart-title">Accuracy vs Attempts</h3>
+                    <div class="chart-container">
+                        <canvas id="accuracyTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="answer-distribution" class="tab-section">
+                <div class="chart-panel">
+                    <h3 class="chart-title">Answer Distribution</h3>
+                    <div class="pie-container">
+                        <canvas id="answerPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="leaderboard" class="tab-section">
+                <div class="chart-panel">
+                    <h3 class="chart-title">Performance Leaderboard</h3>
+                    <div class="table-responsive">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>User</th>
+                                    <th>Attempts</th>
+                                    <th>Accuracy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardTable">
+                                <tr>
+                                    <td colspan="4" class="no-data-message">Loading leaderboard data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="difficulty-breakdown" class="tab-section">
+                <div class="chart-panel">
+                    <h3 class="chart-title">Performance by Difficulty Level</h3>
+                    <div class="chart-container">
+                        <canvas id="difficultyBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="/index" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Practice
+        </a>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            // Update button states
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Update visible tab
+            document.querySelectorAll('.tab-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        async function fetchUserData() {
+            try {
+                const response = await fetch('/user_analysis');
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Update stats
+                document.getElementById('totalAttempted').innerText = data.questions_attempted;
+                document.getElementById('totalCorrect').innerText = data.correct_answers;
+                document.getElementById('totalIncorrect').innerText = data.incorrect_answers;
+                document.getElementById('totalPartial').innerText = data.partial_answers;
+
+                // Populate leaderboard
+                document.getElementById("leaderboardTable").innerHTML = data.leaderboard.map(user => {
+                    let rowClass = user.rank === 1 ? 'gold' : user.rank === 2 ? 'silver' : user.rank === 3 ? 'bronze' : '';
+                    let medal = user.rank === 1 ? '🥇' : user.rank === 2 ? '🥈' : user.rank === 3 ? '🥉' : '';
+                    return `<tr class="${rowClass}">
+                                <td>${medal} ${user.rank}</td>
+                                <td>${user.username}</td>
+                                <td>${user.total_attempts}</td>
+                                <td>${user.accuracy}%</td>
+                            </tr>`;
+                }).join("");
+
+                // Initialize accuracy trend chart
+                new Chart(document.getElementById('accuracyTrendChart').getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: data.attempt_labels,
+                        datasets: [{
+                            label: 'Accuracy (%)',
+                            data: data.accuracy_trend,
+                            borderColor: 'rgba(79, 172, 254, 1)',
+                            backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                            fill: true,
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: 'rgba(79, 172, 254, 1)',
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: 'rgba(79, 172, 254, 1)',
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { 
+                                display: false 
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                titleFont: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                bodyFont: {
+                                    size: 13
+                                },
+                                padding: 10,
+                                displayColors: false
+                            }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true, 
+                                max: 100, 
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                title: { 
+                                    display: true, 
+                                    text: 'Accuracy (%)',
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    font: {
+                                        size: 12
+                                    }
+                                } 
+                            },
+                            x: { 
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)',
+                                    drawOnChartArea: false
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                title: { 
+                                    display: true, 
+                                    text: 'Attempts',
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    font: {
+                                        size: 12
+                                    }
+                                } 
+                            }
+                        }
+                    }
+                });
+
+                // Initialize pie chart
+                new Chart(document.getElementById('answerPieChart').getContext('2d'), {
+                    type: "pie",
+                    data: {
+                        labels: ["Correct", "Incorrect", "Partially Correct"],
+                        datasets: [{
+                            data: [data.correct_answers, data.incorrect_answers, data.partial_answers],
+                            backgroundColor: [
+                                "rgba(76, 175, 80, 0.8)",
+                                "rgba(220, 53, 69, 0.8)",
+                                "rgba(255, 193, 7, 0.8)"
+                            ],
+                            borderColor: [
+                                "rgba(76, 175, 80, 1)",
+                                "rgba(220, 53, 69, 1)",
+                                "rgba(255, 193, 7, 1)"
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { 
+                                position: "bottom",
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    padding: 15,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                titleFont: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                bodyFont: {
+                                    size: 13
+                                },
+                                padding: 10
+                            }
+                        }
+                    }
+                });
+
+                // Initialize difficulty breakdown chart
+                new Chart(document.getElementById('difficultyBarChart').getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Easy', 'Medium', 'Hard'],
+                        datasets: [
+                            {
+                                label: 'Total Questions',
+                                data: [data.total_easy, data.total_medium, data.total_hard],
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Correct Answers',
+                                data: [data.correct_easy, data.correct_medium, data.correct_hard],
+                                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    padding: 15,
+                                    usePointStyle: true,
+                                    pointStyle: 'rect'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                titleFont: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                bodyFont: {
+                                    size: 13
+                                },
+                                padding: 10
+                            }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                title: { 
+                                    display: true, 
+                                    text: 'Count',
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)',
+                                    drawOnChartArea: false
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                document.querySelectorAll('.chart-container, .pie-container').forEach(container => {
+                    container.innerHTML = '<div class="no-data-message">Error loading data. Please try again later.</div>';
+                });
+            }
+        }
+
+        // Initial tab setup
+        document.addEventListener("DOMContentLoaded", function() {
+            // Hide all sections initially
+            document.querySelectorAll('.tab-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show the first tab
+            document.getElementById('accuracy-trend').classList.add('active');
+            
+            // Fetch data
+            fetchUserData();
+        });
+    </script>
+</body>
+</html>
