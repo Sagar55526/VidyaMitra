@@ -1,6 +1,10 @@
 import google.generativeai as genai
+import os
+from dotenv import load_dotenv
 
-genai.configure(api_key="AIzaSyAQjrz2GIJSame8yuxg2IJ1nmt_6s3Ad5s")
+load_dotenv()
+api_key = os.getenv('api_key') 
+genai.configure(api_key=api_key)
 
 def compare_answers(model_answer, user_answer):
     query = f"""
