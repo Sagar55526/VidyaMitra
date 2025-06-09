@@ -22,8 +22,8 @@ def generate_random_password(length=10):
     return ''.join(random.choice(characters) for _ in range(length))
 
 def send_email(to_email, password):
-    sender_email = "ahiresagar06130@gmail.com"
-    sender_password = "utme zvqt xgdd vgzo"
+    sender_email = "vidyamitra0@gmail.com"
+    sender_password = "ixxv tdyd kjcq moje"
     
     subject = "🎉 Congratulations! Your Account is Now Approved 🎉"
     body = f"""
